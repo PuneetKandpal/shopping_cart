@@ -79,8 +79,8 @@ function ProductCard({ product }: { product: ProductType }) {
           </span>
 
           <div className="pt-2 pb-4 w-full flex items-center justify-between">
-            <div className="flex items-end gap-2">
-              <span className="text-3xl font-bold text-slate-900">
+            <div className="flex items-end gap-1 lg:gap-2">
+              <span className="text-2xl lg:text-3xl font-bold text-slate-900">
                 {currencySymbol}
                 {GeneralHelperInstance.getDiscountedPrice(
                   product.productPrice,
@@ -89,14 +89,16 @@ function ProductCard({ product }: { product: ProductType }) {
                 ).toFixed(2)}
               </span>
               {discountValue > 0 && (
-                <span className="text-lg text-slate-900 line-through">
+                <span className="text-base lg:text-lg text-slate-900 line-through">
                   {currencySymbol}
                   {product.productPrice}
                 </span>
               )}
             </div>
             <span>
-              <ProductRatings rating={product.rating} />
+              <ProductRatings rating={product.rating} 
+              classForRating="h-5 w-5"
+              />
             </span>
           </div>
           <Button

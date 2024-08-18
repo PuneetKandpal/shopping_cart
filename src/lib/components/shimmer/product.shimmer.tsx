@@ -9,29 +9,23 @@ function ProductCardShimmer() {
       )}
     >
       <Card className="py-4 shadow-slate-400/60 rounded-md shadow-md ">
-        <div className="relative flex overflow-hidden w-full pb-2 z-0 justify-center">
-          <Skeleton className=" w-[300px] duration-1000 md:w-[380px] h-[300px] md:h-[380px]  rounded-xl max-w-full" />
+        <div className="relative flex overflow-hidden w-full p-2 z-0 justify-center">
+          <Skeleton className=" w-[300px] h-[300px] md:w-[380px]  md:h-[380px]  rounded-xl max-w-full" />
         </div>
         <CardHeader className="pb-0 pt-2 px-4 flex-col w-full items-start">
-          <Skeleton className="text-sm mb-1 uppercase font-semibold text-slate-700/80">
-            <span className="invisible">FamilyName FamilyName FamilyName </span>
-          </Skeleton>
-          <Skeleton className="font-bold text-2xl mb-1">
+          <Skeleton className="font-bold text-2xl mb-1 rounded-xl">
             <span className="invisible">product name</span>
           </Skeleton>
-          <div className="pt-2 pb-4 w-full flex items-center justify-between">
-            <Skeleton className="font-bold text-2xl w-full">
-              <span className="invisible">product name</span>
-            </Skeleton>
-          </div>
-          <span className="text-2xl font-bold text-slate-900">
-            <Skeleton className="w-full">
-              <span className="invisible w-full">
-                {" "}
-                voluptatum am minima voluptate sed expedita.
-              </span>
-            </Skeleton>
-          </span>
+          <Skeleton className="font-bold text-2xl mb-1 w-full rounded-xl">
+            <span className="invisible">product</span>
+          </Skeleton>
+          <Skeleton className="font-bold text-2xl mb-3 w-full rounded-xl">
+            <span className="invisible">product</span>
+          </Skeleton>
+
+          <Skeleton className="w-full rounded-xl">
+            <span className="invisible w-full text-4xl">voluptatum</span>
+          </Skeleton>
         </CardHeader>
       </Card>
     </div>
