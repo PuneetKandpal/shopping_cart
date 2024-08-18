@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { ProductWithQuantityType } from "../../../types";
-import { useAppSelector } from "../redux/hooks";
-import GeneralHelperInstance from "../helpers/general.helper";
+import { ProductWithQuantityType } from "../../../../types";
+
+import GeneralHelperInstance from "@/lib/helpers/general.helper";
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -12,11 +13,29 @@ import {
   Divider,
 } from "@nextui-org/react";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
-import { cn } from "../utils";
-import { RxCross2 } from "react-icons/rx";
+import { cn } from "@/lib/utils";
+import { MdShoppingCartCheckout } from "react-icons/md";
+import NotificationHelperInstance from "@/lib/helpers/notification.helper";
+import { emptyCart } from "@/lib/redux/slices/cart";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 
 export default function CartDetails() {
+  const dispatch = useAppDispatch();
   const [showProductDetails, setShowProductDetails] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleCheckout() {
+    setIsLoading(true);
+    await GeneralHelperInstance.wait(2000); // 2 seconds
+
+    NotificationHelperInstance.Toast({
+      type: "SUCCESS",
+      message:
+        "Your order has been successfully placed. Thank you for your purchase!",
+    });
+    dispatch(emptyCart());
+    setIsLoading(false);
+  }
 
   return (
     <Card className="w-full p-5">
@@ -25,6 +44,18 @@ export default function CartDetails() {
       </CardHeader>
       <CardBody className="pl-5 xl:pl-16">
         <RenderCartTotals />
+
+        <Button
+          onClick={handleCheckout}
+          variant="solid"
+          className="w-full xl:w-4/5 my-4 text-xl"
+          startContent={<MdShoppingCartCheckout className="w-5 h-5" />}
+          color="primary"
+          isLoading={isLoading}
+        >
+          Checkout
+        </Button>
+
         <button
           onClick={() => setShowProductDetails(!showProductDetails)}
           className="flex items-center gap-2  col-span-2 my-5 text-lg font-semibold underline underline-offset-1 text-blue-500 mr-auto"
@@ -58,39 +89,47 @@ function RenderProductDetails() {
         key={"123"}
         className="grid grid-cols-8 bg-gray-100 p-2 mb-2 rounded-md shadow-sm shadow-gray-400"
       >
-        <span className="text-sm xl:text-lg col-span-2 xl:col-span-3">
+        <span className="text-sm xl:text-lg col-span-2 xl:ml-2">
           Product Name
         </span>
-        <span className="text-sm xl:text-lg xl:col-span-1 col-span-2 flex items-center">
-          Quantity
+        <span className="text-sm xl:text-lg col-span-2 text-center">
+          <span className="text-center">Price</span>{" "}
+          <span className="text-center">with discount</span>
         </span>
-        <span className="text-sm xl:text-lg col-span-2">Total Price</span>
-        <span className="text-sm xl:text-lg col-span-2">Discounted Price</span>
+        <span className="text-sm xl:text-lg col-span-2 text-center">
+          <span className="text-center">Tax </span>
+          <span className="text-center">( in %)</span>
+        </span>
+        <span className="text-sm xl:text-lg col-span-2 text-center">
+          Price <span>with tax</span>
+        </span>
       </div>
       {productIdList.map((productId) => {
         const product = cartItems[productId];
         return (
-          <div key={productId} className="grid grid-cols-8 pl-2 xl:pl-4">
-            <span className="text-sm xl:text-lg col-span-2 xl:col-span-3">
+          <div key={productId} className="grid grid-cols-8 pl-1 xl:pl-4">
+            <span className="text-xs xl:text-lg col-span-2">
               {product.productName}
             </span>
-            <span className="text-sm xl:text-lg xl:col-span-1 col-span-2 flex items-center">
-              (
-              <span>
-                <RxCross2 className="w-3 h-3 ml-[0.2rem] mr-[0.1rem]" />{" "}
-              </span>
-              <span className="p-1">{product.quantity}</span>)
-            </span>
-            <span className="text-sm xl:text-lg col-span-2">
-              <span className="p-1 font-semibold">{currencySymbol}</span>
-              {(product.productPrice * product.quantity).toFixed(1)}
-            </span>
-            <span className="text-sm xl:text-lg col-span-2">
+            <span className="text-sm xl:text-lg col-span-2 text-center">
               <span className="p-1 font-semibold">{currencySymbol}</span>
               {GeneralHelperInstance.getDiscountedPrice(
                 product.productPrice,
                 product.productDiscountType,
                 product.productDiscount,
+                product.quantity
+              )}
+            </span>
+            <span className="text-sm xl:text-lg col-span-2 text-center">
+              <span className="p-1">{product.taxInPercent}%</span>
+            </span>
+            <span className="text-sm xl:text-lg col-span-2 text-center">
+              <span className="p-1 font-semibold">{currencySymbol}</span>
+              {GeneralHelperInstance.getNetPriceWithTax(
+                product.productPrice,
+                product.productDiscountType,
+                product.productDiscount,
+                product.taxInPercent,
                 product.quantity
               )}
             </span>
@@ -108,48 +147,57 @@ function RenderCartTotals() {
     totalPriceBeforeDiscount,
     totalPriceAfterDiscount,
     totalDiscountValue,
+    totalPriceWithTax,
     totalItems,
   } = _getTotalPricesAndQuantity(cartItems);
 
   const deliveryCharges =
     totalItems == 0 ? 0 : Number(process.env.NEXT_PUBLIC_DELIVERY_CHARGES);
-  const netPayableAmount = Number(totalPriceAfterDiscount) + deliveryCharges;
+  const totalTaxAmount = totalPriceWithTax - totalPriceAfterDiscount;
+  const netPayableAmount =
+    totalPriceAfterDiscount + deliveryCharges + totalTaxAmount;
 
   return (
     <>
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-5 items-center">
         <span className="text-xl xl:text-2xl  col-span-3">Total Items : </span>
         <span className="text-2xl xl:text-3xl col-span-2 pl-14">
           ({totalItems})
         </span>
       </div>
-      <div className="grid grid-cols-5 mb-1">
+      <div className="grid grid-cols-5 items-center mb-1">
         <span className="text-xl xl:text-2xl col-span-3">Total Price : </span>
         <span className="text-2xl xl:text-3xl col-span-2">
           <span className="p-2 font-semibold">{currencySymbol}</span>
-          {totalPriceBeforeDiscount}
+          {totalPriceBeforeDiscount.toFixed(2)}
         </span>
       </div>
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-5 items-center">
         <span className="text-xl xl:text-2xl col-span-3">
           Total Discount :{" "}
         </span>
         <span className="text-2xl xl:text-3xl col-span-2">
           <span className="p-2 font-semibold">{currencySymbol}</span>
-          {totalDiscountValue}
+          {totalDiscountValue.toFixed(2)}
         </span>
       </div>
-      <div className="grid grid-cols-5 mb-1">
+      <div className="grid grid-cols-5 items-center mb-1">
         <span className="text-xl xl:text-2xl col-span-3">
           Price After Discount :{" "}
         </span>
         <span className="text-2xl xl:text-3xl col-span-2">
           <span className="p-2 font-semibold">{currencySymbol}</span>
-          {totalPriceAfterDiscount}
+          {totalPriceAfterDiscount.toFixed(2)}
         </span>
       </div>
-
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-5 items-center">
+        <span className="text-xl xl:text-2xl col-span-3">Tax amount : </span>
+        <span className="text-2xl xl:text-3xl col-span-2">
+          <span className="p-2 font-semibold">{currencySymbol}</span>
+          {totalTaxAmount.toFixed(2)}
+        </span>
+      </div>
+      <div className="grid grid-cols-5 items-center">
         <span className="text-xl xl:text-2xl col-span-3">
           Delivery Charges :{" "}
         </span>
@@ -159,8 +207,9 @@ function RenderCartTotals() {
         </span>
       </div>
 
-      <Divider className="my-5" />
-      <div className="grid grid-cols-5">
+      <Divider className="my-5 w-full xl:w-5/6" />
+
+      <div className="grid grid-cols-5 items-center">
         <span className="text-xl xl:text-2xl col-span-3 text-green-700">
           Net payable amount :{" "}
         </span>
@@ -180,6 +229,7 @@ function _getTotalPricesAndQuantity(
   let totalDiscountValue = 0;
   let totalPriceAfterDiscount = 0;
   let totalItems = 0;
+  let totalPriceWithTax = 0;
   const productIdList = Object.keys(cartItems);
 
   productIdList.forEach((productId) => {
@@ -204,13 +254,23 @@ function _getTotalPricesAndQuantity(
 
     totalDiscountValue += Number(discountValue);
 
+    const priceWithTax = GeneralHelperInstance.getNetPriceWithTax(
+      product.productPrice,
+      product.productDiscountType,
+      product.productDiscount,
+      product.taxInPercent,
+      product.quantity
+    );
+    totalPriceWithTax += Number(priceWithTax);
+
     totalItems += product.quantity;
   });
 
   return {
-    totalPriceBeforeDiscount: totalPriceBeforeDiscount.toFixed(2),
-    totalPriceAfterDiscount: totalPriceAfterDiscount.toFixed(2),
-    totalDiscountValue: totalDiscountValue.toFixed(2),
-    totalItems: totalItems,
+    totalPriceBeforeDiscount,
+    totalPriceAfterDiscount,
+    totalDiscountValue,
+    totalPriceWithTax,
+    totalItems,
   };
 }

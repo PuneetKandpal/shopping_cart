@@ -7,6 +7,7 @@ export type ProductType = {
   description: string;
   productImage: string;
   productPrice: number;
+  discountedPrice: number;
   productDiscount: number;
   productDiscountType: DiscountType;
   rating: number | null;

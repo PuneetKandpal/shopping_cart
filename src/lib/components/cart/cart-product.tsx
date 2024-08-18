@@ -1,20 +1,23 @@
-import { Button, Card, CardBody, Image } from "@nextui-org/react";
-import React from "react";
-import { ProductWithQuantityType } from "../../../types";
-import productFallBack from "../../../public/assests/product_fallback.png";
-import { ProductRatings } from "./ratings";
-import GeneralHelperInstance from "../helpers/general.helper";
-import { BsFileMinus, BsFilePlus } from "react-icons/bs";
+import { Card, CardBody, Image } from "@nextui-org/react";
+import React, { useState } from "react";
+import { ProductWithQuantityType } from "../../../../types";
+import productFallBack from "../../../../public/assests/product_fallback.png";
+import GeneralHelperInstance from "@/lib/helpers/general.helper";
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { useAppDispatch } from "../redux/hooks";
+
 import {
   decrementProductQuantity,
   incrementProductQuantity,
   removeProductFromCart,
-} from "../redux/slices/cart";
+} from "@/lib/redux/slices/cart";
+import AlertBox from "../alert-box";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { ProductRatings } from "../ratings";
+
 
 function CartProduct({ product }: { product: ProductWithQuantityType }) {
+  const [openRemoveAlert, setOpenRemoveAlert] = useState(false);
   const dispatch = useAppDispatch();
 
   const discountType = product.productDiscountType;
@@ -29,12 +32,30 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
     dispatch(decrementProductQuantity([productId, 1]));
   }
 
-  function handleRemoveItem(productId: string) {
-    dispatch(removeProductFromCart(product.productId));
+  function handleRemoveItem() {
+    setOpenRemoveAlert(!openRemoveAlert);
   }
 
   return (
     <div>
+      <AlertBox
+        modalTitle="Alert !!"
+        actionName="Ok"
+        content={
+          <>
+            <span className="text-lg">
+              Are you sure you want to remove{" "}
+              <span className="font-semibold">{product.productName}</span> from
+              cart ?
+            </span>
+          </>
+        }
+        onAction={() => {
+          dispatch(removeProductFromCart(product.productId));
+        }}
+        isOpen={openRemoveAlert}
+        onOpenChange={handleRemoveItem}
+      />
       <Card
         className="border-none bg-background/60 dark:bg-default-100/50 w-full"
         shadow="sm"
@@ -109,7 +130,7 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
                       />
                     ) : (
                       <MdOutlineDeleteForever
-                        onClick={() => handleRemoveItem(product.productId)}
+                        onClick={() => handleRemoveItem()}
                         className="md:h-10 md:w-10 h-8 w-8 border-red-600 text-red-600 shadow-sm shadow-red-400 rounded-full p-1 border-2"
                       />
                     )}
@@ -117,7 +138,7 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
 
                   <input
                     type="text"
-                    className="md:w-16 md:h-12 w-10 h-8 text-center text-lg font-semibold border rounded-sm"
+                    className="md:w-16 md:h-12 w-10 h-8 text-center text-lg xl:text-xl font-semibold border rounded-sm"
                     value={product.quantity}
                     readOnly
                   />

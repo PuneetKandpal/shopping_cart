@@ -4,5 +4,8 @@ export const queryKey = {
     },
     productFamily:{
         getAll: "getAllProductFamilies"
-    }
+    },
+    localStorage:{
+        cartItems: "cartItems"
+    },
 }

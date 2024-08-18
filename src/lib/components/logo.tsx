@@ -4,10 +4,8 @@ import { Image } from "@nextui-org/react";
 import React, { useEffect } from "react";
 
 function Logo({
-  logoMetaData,
   logoUrl,
 }: {
-  logoMetaData: any;
   logoUrl: string;
 }) {
 
@@ -20,15 +18,15 @@ function Logo({
 
   return (
     <div
-      className="flex items-center  border-color-fourth px-3 py-1 rounded-full ml-1"
-      style={{ backgroundColor: logoMetaData.backgroundColor}}
+      className="flex items-center bg-black h-[50px] w-[250px]"
     >
-      <Image
+      {/* <Image
         src={logo}
-        alt={logoMetaData.alt}
+        alt="logo"
         className="object-fill rounded-none object-center border-color-fourth"
-        style={{ width: logoMetaData.width, height: logoMetaData.height }}
-      />
+        height={60}
+        width={250}
+      /> */}
     </div>
   );
 }

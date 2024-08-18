@@ -13,7 +13,7 @@ class GeneralHelper {
   createResponseJSON(
     status: boolean,
     data: Record<string, unknown> | null,
-    message: string,
+    message: string
   ) {
     return {
       status: status,
@@ -22,6 +22,9 @@ class GeneralHelper {
     };
   }
 
+  async wait(ms: number) {
+    return await new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   getDiscountedPrice(
     price: number,
@@ -32,9 +35,9 @@ class GeneralHelper {
     if (price < 0) {
       throw new Error("Price cannot be negative");
     }
-  
+
     let discountedPrice = 0;
-  
+
     switch (discountType) {
       case "PERCENT":
         if (discountValue < 0 || discountValue > 100) {
@@ -42,7 +45,7 @@ class GeneralHelper {
         }
         discountedPrice = price * (1 - discountValue / 100);
         break;
-  
+
       case "FLAT":
         if (discountValue < 0) {
           throw new Error("Flat discount cannot be negative");
@@ -52,12 +55,50 @@ class GeneralHelper {
           throw new Error("Flat discount cannot exceed the price");
         }
         break;
-  
+
       default:
         throw new Error("Invalid discount type");
     }
-  
-    return (discountedPrice * quantity).toFixed(2);
+
+    return discountedPrice * quantity;
+  }
+
+  getNetPriceWithTax(
+    price: number,
+    discountType: DiscountType,
+    discountValue: number,
+    taxInPercent: number,
+    quantity: number = 1
+  ) {
+    if (price < 0) {
+      throw new Error("Price cannot be negative");
+    }
+
+    let discountedPrice = 0;
+
+    switch (discountType) {
+      case "PERCENT":
+        if (discountValue < 0 || discountValue > 100) {
+          throw new Error("Percentage discount must be between 0 and 100");
+        }
+        discountedPrice = price * (1 - discountValue / 100);
+        break;
+
+      case "FLAT":
+        if (discountValue < 0) {
+          throw new Error("Flat discount cannot be negative");
+        }
+        discountedPrice = price - discountValue;
+        if (discountedPrice < 0) {
+          throw new Error("Flat discount cannot exceed the price");
+        }
+        break;
+
+      default:
+        throw new Error("Invalid discount type");
+    }
+
+    return (discountedPrice * quantity * (1 + taxInPercent / 100)).toFixed(2);
   }
 
   getDiscountValue(
@@ -69,9 +110,9 @@ class GeneralHelper {
     if (price < 0) {
       throw new Error("Price cannot be negative");
     }
-  
+
     let discountInCurrency = 0;
-  
+
     switch (discountType) {
       case "PERCENT":
         if (discountValue < 0 || discountValue > 100) {
@@ -79,19 +120,23 @@ class GeneralHelper {
         }
         discountInCurrency = price * (discountValue / 100);
         break;
-  
+
       case "FLAT":
         if (discountValue < 0) {
           throw new Error("Flat discount cannot be negative");
         }
-        discountInCurrency =  discountValue;
+        discountInCurrency = discountValue;
         break;
-  
+
       default:
         throw new Error("Invalid discount type");
     }
-  
+
     return (discountInCurrency * quantity).toFixed(2);
+  }
+
+  capitalize(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }
 

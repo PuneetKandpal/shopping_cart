@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { FaCartPlus } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import NotificationHelperInstance from "../helpers/notification.helper";
+import NotificationHelperInstance from "@/lib/helpers/notification.helper";
 
 function Cart() {
   const cartItems = useAppSelector((state) => state.cart.productIdAndQuantity);
@@ -27,11 +27,11 @@ function Cart() {
 
   return (
     <div
-      className="relative z-0 active:scale-95 cursor-pointer transition-all duration-100"
+      className="relative z-0 active:scale-95 cursor-pointer transition-all duration-100 "
       onClick={handleCartClick}
     >
       {cartCount > 0 && <Badge cartCount={cartCount} />}
-      <FaCartPlus className="w-10 h-10 text-color-first" />
+      <FaCartPlus className="w-10 h-10 text-white" />
     </div>
   );
 }
@@ -40,7 +40,7 @@ export default Cart;
 
 function Badge({ cartCount }: { cartCount: number }) {
   return (
-    <span className="z-10 w-6 h-6 flex items-center justify-center absolute rounded-full bg-blue-300 border-blue-800 font-semibold -top-2 -right-2">
+    <span className="z-10 w-6 h-6 flex items-center justify-center absolute rounded-full bg-danger-200 border-danger-800 font-semibold -top-2 -right-2">
       {cartCount}
     </span>
   );

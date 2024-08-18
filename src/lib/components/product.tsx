@@ -8,13 +8,15 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 import { ProductType } from "../../../types";
-import { DiscountType } from "@prisma/client";
 import { ProductRatings } from "./ratings";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { addProductToCart, removeProductFromCart } from "../redux/slices/cart";
 import { BsCartPlusFill, BsFillCartDashFill } from "react-icons/bs";
 import productFallBack from "../../../public/assests/product_fallback.png";
 import GeneralHelperInstance from "../helpers/general.helper";
+
+
+
 
 function ProductCard({ product }: { product: ProductType }) {
   const dispatch = useAppDispatch();
@@ -52,8 +54,9 @@ function ProductCard({ product }: { product: ProductType }) {
           />
           {discountValue > 0 && (
             <span className="absolute z-10 top-[1%] left-[6%] m-2 bg-black text-white rounded-full px-2 text-center text-sm md:text-base font-medium ">
-              {discountValue}
-              {discountType == "PERCENT" ? "%" : currencySymbol} OFF
+              {discountType == "PERCENT"
+                ? `${discountValue}% OFF`
+                : `${currencySymbol}${discountValue} OFF`}
             </span>
           )}
         </div>
@@ -74,7 +77,7 @@ function ProductCard({ product }: { product: ProductType }) {
                   product.productPrice,
                   discountType,
                   discountValue
-                )}
+                ).toFixed(2)}
               </span>
               {discountValue > 0 && (
                 <span className="text-lg text-slate-900 line-through">
@@ -89,14 +92,15 @@ function ProductCard({ product }: { product: ProductType }) {
           </div>
           <Button
             onClick={() => handleCart(product)}
-            className="flex w-full items-center justify-center rounded-md bg-slate-800 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+            className="flex w-full items-center justify-center rounded-md px-5 py-2.5 text-center text-sm font-medium text-white  focus:outline-none focus:ring-4 focus:ring-blue-300"
+            color={cart[product.productId] ? "danger" : "primary"}
           >
             {!cart[product.productId] ? (
-              <BsCartPlusFill className="mr-2 h-6 w-6 text-color-fourth" />
+              <BsCartPlusFill className="mr-2 h-6 w-6 " />
             ) : (
-              <BsFillCartDashFill className="mr-2 h-6 w-6 text-color-fourth" />
+              <BsFillCartDashFill className="mr-2 h-6 w-6 " />
             )}
-            <span className="text-color-fourth">
+            <span className="text-white">
               {cart[product.productId] ? "Remove from cart" : "Add to cart"}
             </span>
           </Button>
@@ -107,5 +111,3 @@ function ProductCard({ product }: { product: ProductType }) {
 }
 
 export default ProductCard;
-
-

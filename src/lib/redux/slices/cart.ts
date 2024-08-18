@@ -57,6 +57,12 @@ export const cartSlice = createSlice({
       }
       state.productIdAndQuantity[productId].quantity -= quantity;
     },
+    setCartItems: (state: cartState, action: PayloadAction<Record<string, ProductWithQuantityType>>) => {
+      state.productIdAndQuantity = action.payload;
+    },
+    emptyCart: (state: cartState) => {
+      state.productIdAndQuantity = {};
+    }
   },
 });
 
@@ -64,7 +70,9 @@ export const {
   addProductToCart,
   decrementProductQuantity,
   incrementProductQuantity,
-  removeProductFromCart
+  removeProductFromCart,
+  setCartItems,
+  emptyCart
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

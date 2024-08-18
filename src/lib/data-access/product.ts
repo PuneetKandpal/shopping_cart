@@ -14,24 +14,20 @@ class ProductDA {
   async getProducts(
     offset: number,
     limit: number,
-    search?: Record<string, string> | null
+    where?: Record<string, string> | null,
+    sort?: Record<string, string> | null
   ) {
     try {
-      let where = { isDeleted: false };
-
-      if (search) {
-        where = {
-          isDeleted: false,
-          ...search,
-        };
-      }
-
       const products = await prisma.product.findMany({
-        where: {},
+        where: {
+          ...where,
+          isDeleted: false,
+        },
         skip: offset,
         take: limit,
+
         orderBy: {
-          familyId: "asc",
+          ...sort,
         },
         include: {
           family: true,
@@ -44,19 +40,13 @@ class ProductDA {
     }
   }
 
-  async getProductsCount(search?: Record<string, string> | null) {
+  async getProductsCount(where?: Record<string, string> | null) {
     try {
-      let where = { isDeleted: false };
-
-      if (search) {
-        where = {
-          isDeleted: false,
-          ...search,
-        };
-      }
-
       const productsCount = await prisma.product.count({
-        where,
+        where: {
+          ...where,
+          isDeleted: false,
+        },
       });
       return productsCount;
     } catch (error) {

@@ -6,9 +6,9 @@ import FilterSortComponent from "./filter-sort-component";
 
 function Home() {
   return (
-    <div className=" grid grid-cols-12 gap-4 p-4">
+    <div className=" grid grid-cols-12 p-4">
       <div className="col-span-12 md:col-span-3 ">
-        <FilterSortComponent />
+          <FilterSortComponent />
       </div>
       <div className="col-span-12 md:col-span-9 ">
         <ProductList />
