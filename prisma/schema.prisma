@@ -6,3 +6,99 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ----------------------------------Enums ----------------------------------
+enum DiscountType {
+  PERCENT
+  FLAT
+}
+
+enum UserRole {
+  Admin
+  User
+}
+
+enum paymentStatusType {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+// ----------------------------------User Model ----------------------------------
+model User {
+  userId   Int       @id @default(autoincrement())
+  userName String?   @unique @map("User_Name")
+  email    String?   @map("Email")
+  isActive Boolean   @default(true) @map("Is_Active")
+  role     UserRole? @default(User) @map("Role")
+
+  isDeleted Boolean   @default(false) @map("Is_Deleted")
+  createdAt DateTime  @default(now()) @map("Created_At")
+  updatedAt DateTime? @updatedAt @map("Updated_At")
+}
+
+// ----------------------------------Product Model ----------------------------------
+model Product {
+  productId           String        @id @default(cuid())
+  productCode         String?       @unique @map("Product_Code")
+  productName         String        @map("Product_Name")
+  description         String        @map("Description")
+  productImage        String?       @map("Product_Image")
+  productPrice        Float?        @map("Product_Price")
+  productDiscount     Float?        @default(0.0) @map("Product_Discount")
+  productDiscountType DiscountType  @default(PERCENT) @map("Product_Discount_Type")
+  rating              Float?        @map("Rating")
+  showAssuredTag      Boolean       @default(false) @map("Show_Assured_Tag")
+  familyId            String        @map("Family_Id")
+  family              ProductFamily @relation(fields: [familyId], references: [familyId])
+
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// ----------------------------------Product Family Model ----------------------------------
+model ProductFamily {
+  familyId     String    @id @default(cuid()) @map("Family_Id")
+  familyName   String    @unique @map("Family_Name")
+  description  String    @map("Description")
+  familyImage  String?   @map("Family_Image")
+  taxInPercent Float?    @map("Tax_In_Percent")
+  product      Product[]
+
+  isDeleted Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// ----------------------------------Transaction Model ----------------------------------
+
+model Transaction {
+  transactionId           String             @id @default(cuid())
+  userId                  Int                @map("User_Id")
+  totalItems              Int                @map("Total_Items")
+  totalPriceAfterDiscount Float              @map("Total_Price_After_Discount")
+  totalDiscountAmount     Float              @map("Total_Discount_Amount")
+  totalTaxAmount          Float              @map("Total_Tax_Amount")
+  shippingCharges         Float              @map("Shipping_Charges")
+  paymentStatus           paymentStatusType? @map("Payment_Status")
+  transactionStatus       String             @map("Transaction_Status")
+  transactionDate         DateTime           @map("Transaction_Date")
+
+  transactionDetails TransactionDetails[]
+}
+
+// ----------------------------------Transaction Details Model ----------------------------------
+
+model TransactionDetails {
+  transactionDetailId        String @id @default(cuid())
+  productId                  String @map("Product_Id")
+  quantity                   Int    @map("Quantity")
+  productPriceBeforeDiscount Float  @map("Product_Price_Before_Discount")
+  discountAmount             Float  @map("Discount_Amount")
+  productPriceAfterDiscount  Float  @map("Product_Price_After_Discount")
+  taxAmount                  Float  @map("Tax_Amount")
+
+  transactionId String      @map("Transaction_Id")
+  transaction   Transaction @relation(fields: [transactionId], references: [transactionId])
+}
