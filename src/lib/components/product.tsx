@@ -54,8 +54,8 @@ function ProductCard({ product }: { product: ProductType }) {
         }
       )}
     >
-      <Card className="py-4 shadow-slate-400/60 rounded-md shadow-md ">
-        <div className="relative flex overflow-hidden w-full pb-2 z-0 justify-center">
+      <Card className="pb-4 pt-3 shadow-slate-400/60 rounded-md shadow-md ">
+        <div className="relative flex overflow-hidden w-full px-2 z-0 justify-center">
           <Image
             alt="Card background"
             className=" object-center object-fill transition-all duration-300 w-[300px] md:w-[380px] h-[300px] md:h-[380px] group-hover:scale-[105%] rounded-xl max-w-full"

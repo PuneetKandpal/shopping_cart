@@ -37,10 +37,15 @@ const config = {
             "background-position": "calc(100% + var(--shimmer-width)) 0",
           },
         },
+        roll:{
+          "0%": {transform: "translateX(100%)"},
+          "100%": {transform: "translateX(-100%)"}
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        roll: "roll 35s linear infinite",
       },
     },
   },
