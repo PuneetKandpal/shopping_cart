@@ -9,6 +9,7 @@ import LocalStorageHelperInstance from "../../helpers/local-storage.helper";
 import { setCartItems } from "../../redux/slices/cart";
 import { queryKey } from "../../constants/query.constants";
 import { ProductWithQuantityType } from "../../../../types";
+import { Spinner } from "@nextui-org/react";
 
 function CartWrapper() {
   const cartItems = useAppSelector((state) => state.cart.productIdAndQuantity);
@@ -39,8 +40,8 @@ function CartWrapper() {
 
   if (loading) {
     return (
-      <div className="w-full h-screen flex justify-center items-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700"></div>
+      <div className="w-full mt-[50%] flex justify-center items-center">
+        <Spinner color="primary" size="lg" />
       </div>
     );
   }
@@ -51,7 +52,7 @@ function CartWrapper() {
 
   return (
     <div className="relative grid grid-cols-1 xl:grid-cols-5 gap-2 md:gap-5">
-      <div className="col-span-2 xl:pt-10 order-1 xl:order-2">
+      <div className="col-span-2 xl:pt-6 order-1 xl:order-2">
         <CartDetails />
       </div>
       <div className="col-span-3 relative order-2 xl:order-1">

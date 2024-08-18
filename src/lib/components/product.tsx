@@ -6,7 +6,7 @@ import {
   cn,
   Image,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { ProductType } from "../../../types";
 import { ProductRatings } from "./ratings";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -14,6 +14,8 @@ import { addProductToCart, removeProductFromCart } from "../redux/slices/cart";
 import { BsCartPlusFill, BsFillCartDashFill } from "react-icons/bs";
 import productFallBack from "../../../public/assests/product_fallback.png";
 import GeneralHelperInstance from "../helpers/general.helper";
+import LocalStorageHelperInstance from "../helpers/local-storage.helper";
+import { queryKey } from "../constants/query.constants";
 
 
 
@@ -25,6 +27,13 @@ function ProductCard({ product }: { product: ProductType }) {
   const discountType = product.productDiscountType;
   const discountValue = product.productDiscount;
   const currencySymbol = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL;
+
+  useEffect(() => {
+    LocalStorageHelperInstance.setItem(
+      queryKey.localStorage.cartItems,
+      JSON.stringify(cart)
+    );
+  }, [cart]);
 
   function handleCart(product: ProductType) {
     // Add product to cart

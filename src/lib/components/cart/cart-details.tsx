@@ -10,6 +10,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  divider,
   Divider,
 } from "@nextui-org/react";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
@@ -18,11 +19,14 @@ import { MdShoppingCartCheckout } from "react-icons/md";
 import NotificationHelperInstance from "@/lib/helpers/notification.helper";
 import { emptyCart } from "@/lib/redux/slices/cart";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import AlertBox from "../alert-box";
+import { MdDeleteForever } from "react-icons/md";
 
 export default function CartDetails() {
   const dispatch = useAppDispatch();
   const [showProductDetails, setShowProductDetails] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showClearCartModal, setShowClearCartModal] = useState(false);
 
   async function handleCheckout() {
     setIsLoading(true);
@@ -39,6 +43,25 @@ export default function CartDetails() {
 
   return (
     <Card className="w-full p-5">
+      <AlertBox
+        actionName="Yes"
+        content={
+          <div className="flex flex-col gap-2">
+            <span>
+              This will clear your cart and you will not be able to checkout
+            </span>
+            <span>Do you wish to proceed ?</span>
+          </div>
+        }
+        modalTitle="Clear Cart"
+        isOpen={showClearCartModal}
+        onOpenChange={() => {
+          setShowClearCartModal(!showClearCartModal);
+        }}
+        onAction={() => {
+          dispatch(emptyCart());
+        }}
+      />
       <CardHeader>
         <span className="text-3xl xl:text-4xl font-bold">Cart Details</span>
       </CardHeader>
@@ -48,14 +71,22 @@ export default function CartDetails() {
         <Button
           onClick={handleCheckout}
           variant="solid"
-          className="w-full xl:w-4/5 my-4 text-xl"
+          className="w-full xl:w-4/5 mt-4 mb-1 text-lg lg:text-xl"
           startContent={<MdShoppingCartCheckout className="w-5 h-5" />}
           color="primary"
           isLoading={isLoading}
         >
           Checkout
         </Button>
-
+        <Button
+          color="danger"
+          variant="ghost"
+          onClick={() => setShowClearCartModal(true)}
+          startContent={<MdDeleteForever className="w-5 h-5" />}
+          className="w-full xl:w-4/5 mt-2 mb-1 text-lg lg:text-xl"
+        >
+          Clear Cart
+        </Button>
         <button
           onClick={() => setShowProductDetails(!showProductDetails)}
           className="flex items-center gap-2  col-span-2 my-5 text-lg font-semibold underline underline-offset-1 text-blue-500 mr-auto"
@@ -160,48 +191,52 @@ function RenderCartTotals() {
   return (
     <>
       <div className="grid grid-cols-5 items-center">
-        <span className="text-xl xl:text-2xl  col-span-3">Total Items : </span>
-        <span className="text-2xl xl:text-3xl col-span-2 pl-14">
+        <span className="text-lg xl:text-2xl  col-span-3">Total Items : </span>
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0 pl-14 ml-auto lg:ml-0">
           ({totalItems})
         </span>
       </div>
       <div className="grid grid-cols-5 items-center mb-1">
-        <span className="text-xl xl:text-2xl col-span-3">Total Price : </span>
-        <span className="text-2xl xl:text-3xl col-span-2">
+        <span className="text-lg xl:text-2xl col-span-3 text-nowrap">
+          Total Price :{" "}
+        </span>
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
           {totalPriceBeforeDiscount.toFixed(2)}
         </span>
       </div>
       <div className="grid grid-cols-5 items-center">
-        <span className="text-xl xl:text-2xl col-span-3">
+        <span className="text-lg xl:text-2xl col-span-3 text-nowrap">
           Total Discount :{" "}
         </span>
-        <span className="text-2xl xl:text-3xl col-span-2">
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
           {totalDiscountValue.toFixed(2)}
         </span>
       </div>
       <div className="grid grid-cols-5 items-center mb-1">
-        <span className="text-xl xl:text-2xl col-span-3">
+        <span className="text-lg xl:text-2xl col-span-3 text-nowrap">
           Price After Discount :{" "}
         </span>
-        <span className="text-2xl xl:text-3xl col-span-2">
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
           {totalPriceAfterDiscount.toFixed(2)}
         </span>
       </div>
       <div className="grid grid-cols-5 items-center">
-        <span className="text-xl xl:text-2xl col-span-3">Tax amount : </span>
-        <span className="text-2xl xl:text-3xl col-span-2">
+        <span className="text-lg xl:text-2xl col-span-3 text-nowrap">
+          Tax amount :{" "}
+        </span>
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
           {totalTaxAmount.toFixed(2)}
         </span>
       </div>
       <div className="grid grid-cols-5 items-center">
-        <span className="text-xl xl:text-2xl col-span-3">
+        <span className="text-lg xl:text-2xl col-span-3 text-nowrap">
           Delivery Charges :{" "}
         </span>
-        <span className="text-2xl xl:text-3xl col-span-2">
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
           {deliveryCharges.toFixed(2)}
         </span>
@@ -210,10 +245,10 @@ function RenderCartTotals() {
       <Divider className="my-5 w-full xl:w-5/6" />
 
       <div className="grid grid-cols-5 items-center">
-        <span className="text-xl xl:text-2xl col-span-3 text-green-700">
+        <span className="text-lg xl:text-2xl col-span-3 text-nowrap text-green-700">
           Net payable amount :{" "}
         </span>
-        <span className="text-2xl xl:text-3xl col-span-2">
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
           {netPayableAmount.toFixed(2)}
         </span>

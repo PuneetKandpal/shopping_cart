@@ -18,15 +18,15 @@ function Logo({
 
   return (
     <div
-      className="flex items-center bg-black h-[50px] w-[250px]"
+      className="flex items-center h-[60px] w-[300px] rounded-xl"
     >
-      {/* <Image
+      <Image
         src={logo}
         alt="logo"
         className="object-fill rounded-none object-center border-color-fourth"
         height={60}
-        width={250}
-      /> */}
+        width={300}
+      />
     </div>
   );
 }

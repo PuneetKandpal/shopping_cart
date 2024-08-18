@@ -15,7 +15,6 @@ import AlertBox from "../alert-box";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { ProductRatings } from "../ratings";
 
-
 function CartProduct({ product }: { product: ProductWithQuantityType }) {
   const [openRemoveAlert, setOpenRemoveAlert] = useState(false);
   const dispatch = useAppDispatch();
@@ -78,11 +77,11 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
                 <span className=" text-base md:text-lg  uppercase font-semibold text-slate-700/80">
                   {product.familyName}
                 </span>
-
                 {discountValue > 0 && (
                   <span className="z-10 top-[1%] w-20 md:w-24 left-[6%] m-2 bg-black text-white rounded-full px-2 text-center text-sm md:text-base font-medium ">
-                    {discountValue}
-                    {discountType == "PERCENT" ? "%" : currencySymbol} OFF
+                    {discountType == "PERCENT"
+                      ? `${discountValue}% OFF`
+                      : `${currencySymbol}${discountValue} OFF`}
                   </span>
                 )}
               </div>
@@ -95,7 +94,7 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
 
               <div className="py-6 w-full flex items-center justify-between">
                 <div className="flex items-end gap-2">
-                  <span className=" text-4xl md:text-5xl font-bold text-slate-900">
+                  <span className=" text-3xl md:text-5xl font-bold text-slate-900">
                     {currencySymbol}
                     {GeneralHelperInstance.getDiscountedPrice(
                       product.productPrice,
@@ -104,7 +103,7 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
                     )}
                   </span>
                   {discountValue > 0 && (
-                    <span className="text-lg md:text-xl text-slate-900 line-through">
+                    <span className="text-base md:text-xl text-slate-900 line-through">
                       {currencySymbol}
                       {product.productPrice}
                     </span>
@@ -113,8 +112,8 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
                 <span>
                   <ProductRatings
                     rating={product.rating}
-                    classForStars="h-6 w-6 md:h-8 md:w-8"
-                    classForRating="md:text-lg md:w-14"
+                    classForStars="h-5 w-5 md:h-8 md:w-8"
+                    classForRating="w-10 md:text-lg md:w-14"
                   />
                 </span>
               </div>

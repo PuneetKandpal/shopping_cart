@@ -19,15 +19,19 @@ function ProductCardShimmer() {
           <Skeleton className="font-bold text-2xl mb-1">
             <span className="invisible">product name</span>
           </Skeleton>
-          <span className="text-3xl font-bold text-slate-900">
+          <div className="pt-2 pb-4 w-full flex items-center justify-between">
+            <Skeleton className="font-bold text-2xl w-full">
+              <span className="invisible">product name</span>
+            </Skeleton>
+          </div>
+          <span className="text-2xl font-bold text-slate-900">
             <Skeleton className="w-full">
-              <span className="invisible w-full"> voluptatum am minima voluptate sed expedita.</span>
+              <span className="invisible w-full">
+                {" "}
+                voluptatum am minima voluptate sed expedita.
+              </span>
             </Skeleton>
           </span>
-
-          <div className="pt-2 pb-4 w-full flex items-center justify-between">
-            <div className="flex items-end gap-2"></div>
-          </div>
         </CardHeader>
       </Card>
     </div>
