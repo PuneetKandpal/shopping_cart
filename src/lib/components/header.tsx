@@ -11,13 +11,13 @@ async function Header() {
       className="sticky top-0 w-full bg-primary justify-between
        z-50 h-[60px] shadow-inner flex flex-row items-center pr-3 lg:pr-5"
     >
-      <Link href={"/"} className="flex flex-row items-center gap-5">
+      <Link href={"/"} className="flex flex-row items-center gap-5 h-full">
         <Image
           src={logoImage.src}
           alt="logo"
-          className="object-fill object-center rounded-sm border-color-fourth"
+          className="object-fill object-center rounded-sm border-color-fourth my-auto"
           height={60}
-          width={300}
+          width={260}
         />
       </Link>
 

@@ -93,14 +93,14 @@ function CartProduct({ product }: { product: ProductWithQuantityType }) {
               </span>
 
               <div className="py-6 w-full flex items-center justify-between">
-                <div className="flex items-end gap-2">
-                  <span className=" text-3xl md:text-5xl font-bold text-slate-900">
+                <div className="flex items-end gap-1 md:gap-2">
+                  <span className=" text-2xl md:text-4xl font-bold text-slate-900">
                     {currencySymbol}
                     {GeneralHelperInstance.getDiscountedPrice(
                       product.productPrice,
                       discountType,
                       discountValue
-                    )}
+                    ).toFixed(2)}
                   </span>
                   {discountValue > 0 && (
                     <span className="text-base md:text-xl text-slate-900 line-through">

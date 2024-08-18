@@ -149,7 +149,7 @@ function RenderProductDetails() {
                 product.productDiscountType,
                 product.productDiscount,
                 product.quantity
-              )}
+              ).toFixed(2)}
             </span>
             <span className="text-sm xl:text-lg col-span-2 text-center">
               <span className="p-1">{product.taxInPercent}%</span>
@@ -192,7 +192,7 @@ function RenderCartTotals() {
     <>
       <div className="grid grid-cols-5 items-center">
         <span className="text-lg xl:text-2xl  col-span-3">Total Items : </span>
-        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0 pl-14 ml-auto lg:ml-0">
+        <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0 pl-14">
           ({totalItems})
         </span>
       </div>
@@ -216,7 +216,7 @@ function RenderCartTotals() {
       </div>
       <div className="grid grid-cols-5 items-center mb-1">
         <span className="text-lg xl:text-2xl col-span-3 text-nowrap">
-          Price After Discount :{" "}
+          After Discount :{" "}
         </span>
         <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
@@ -246,7 +246,7 @@ function RenderCartTotals() {
 
       <div className="grid grid-cols-5 items-center">
         <span className="text-lg xl:text-2xl col-span-3 text-nowrap text-green-700">
-          Net payable amount :{" "}
+          Net amount :{" "}
         </span>
         <span className="text-xl xl:text-3xl col-span-2 ml-auto lg:ml-0">
           <span className="p-2 font-semibold">{currencySymbol}</span>
